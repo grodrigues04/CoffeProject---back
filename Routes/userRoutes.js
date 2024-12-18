@@ -32,8 +32,8 @@ const userRoutes = [
         }
       },
     },
-
-    {//CRIAR USUARIO
+    {
+      //CRIAR USUARIO
       method: 'POST',
       path: '/cadastro',
       handler: async (request, h) => {
@@ -42,43 +42,36 @@ const userRoutes = [
         try{
           const body = JSON.parse(request.payload.body);
           let {nome_usuario, email, senha} = body;
-          console.log("Definição de variaveis..")
-          console.log(nome_usuario, email, senha)
           senha = await Password(senha) //protegendo a senha
-          console.log("variavel senha ta ficano assim:", senha)
-          try{
-            const [id] = await knex('usuarios').insert({
-              nome_usuario,
-              email,
-              senha
-            }).returning('id')
-          }
-          catch(erro){
-            if(erro.constraint in erros){
-              console.log(`ERRO!! ${erros[erro.constraint]}`)
-              return h.response({message:erros[erro.constraint]}).code(409);
-            }
-          }
-          // console.log("Adicionado ao banco:", senha)
 
-          // const [id_carrinho] = await knex("carrinho").insert({
-          //   id_usuario:id
-          // }).returning('id')
-          // console.log("Criando carrinho para o usuario:", senha)
 
-          // const [id_user] = await knex('usuarios').insert({
-          //   id_carrinho:id_carrinho
-          // }).returning('id')
-          // console.log("Carrinho criado", senha)
+          //Adiciona usuario na tabela usuarios
+          const [id] = await knex('usuarios').insert({
+            nome_usuario,
+            email,
+            senha
+          }).returning('id')
 
-          // console.log("Usuario criado com sucesso!")
-          console.log("Usuario criado!")
+          //cria um carrinho para o usuario
+          console.log(id.id)
+          const [id_user_carrinho] = await knex('carrinho').insert({
+            id_usuario:id.id
+          }).returning('id')
+
           return h.response({message:"Usuario criado com sucesso"}).code(201);
+
         }
-        catch(error){
-          return h.response({message:'erro na criacao do usuario', erro: error}).code(500);
+        catch(erro){
+          if(erro.constraint in erros){
+            console.log(`ERRO!! ${erros[erro.constraint]}`)
+            return h.response({message:erros[erro.constraint]}).code(409);
+          }
+          else{
+            return h.response({message:erros}).code(400);
+          }
+
         }
-      },
+      }
     },
     {
       method:"POST",
