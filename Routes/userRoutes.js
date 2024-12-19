@@ -1,6 +1,6 @@
 // userRoutes.js
-const knexConfig = require('../knexfile'); // Importa as configurações do Knex
-const knex = require('knex')(knexConfig.development); // Inicializa o Knex com o ambiente de desenvolvimento
+const knexConfig = require('../knexfile'); 
+const knex = require('knex')(knexConfig.development); 
 const bcrypt = require('bcrypt');
 const erros = require("./utils")
 
@@ -74,6 +74,7 @@ const userRoutes = [
       }
     },
     {
+      //FAZER LOGIN
       method:"POST",
       path:"/login",
       handler:async(request, h)=>{
@@ -87,11 +88,11 @@ const userRoutes = [
           if(usuario){
               usuario = usuario[0]
 
+            } //senha do BD, senha do forms
               if (verifyPassword(senha, usuario.senha)){
                 console.log("Vou retornar 302 - Deu tudo certo")
                 return h.response({message:"Usuario encontrado com sucesso", user:usuario }).code(200)
                 
-              } //senha do BD, senha do forms
               console.log("Vou retornar 401")
               return h.response({message:"Senha incorreta"}).code(401)
             }
