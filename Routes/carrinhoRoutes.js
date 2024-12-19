@@ -22,9 +22,6 @@ const carrinhoRoutes = [
                     id_cafe:id_item,
                     id_carrinho:id_carrinho.id
                 }).returning('id')
-                
-
-
                 console.log("Adicionado ao carrinho! ")
 
             }
@@ -35,6 +32,7 @@ const carrinhoRoutes = [
         }
     },
     {
+        //Mostra os itens do carrinho
         method:"GET",
         path:"/ItensCarrinho/{id}",
         handler:async(request, h)=>{
@@ -59,7 +57,6 @@ const carrinhoRoutes = [
                 let total_preco = 0
                 console.log("rodei")
                 for(const item of itens){
-
                     if(!lista.includes(item.id_cafe)){
                         lista.push(item.id_cafe)
                         const cafe = await utils.cafe_by_id(knex, item.id_cafe)
@@ -68,10 +65,10 @@ const carrinhoRoutes = [
                         total_preco = total_preco + cafe[0].preco
                     }
                 }
-                console.log(total_preco > 0)
-                //preco vai ser sempre o ultimo item do array resultado
+                if(total_preco > 0){
+                    total_preco = parseFloat(total_preco.toFixed(2)); //Arredondamento
+                }
 
-                console.log(total_preco)
                 const data_info = {"resultado":resultado, "preco_total":total_preco}
                 return h.response({message:"Tudo certo",data_info}).code(200)
 
