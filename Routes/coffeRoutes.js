@@ -1,6 +1,7 @@
 const knexConfig = require('../knexfile'); // Importa as configurações do Knex
 const knex = require('knex')(knexConfig.development); // Inicializa o Knex com o ambiente de desenvolvimento
 const defaultImg = "https://coffee.alexflipnote.dev/9XplvHbtDys_coffee.jpg"
+const utils = require("./utils")
 
 async function getImg(){
     const imgResponse = await fetch("https://coffee.alexflipnote.dev/random.json")
@@ -68,7 +69,7 @@ const coffeRoutes = [
             const cafeId = request.params.id
             console.log("ID DA URL:", cafeId)
             try{
-                const result = await knex("estoque").where({id:cafeId}) //coluna ID, busque pelo cafeId
+                const result = await utils.cafe_by_id(knex, cafeId) //coluna ID, busque pelo cafeId
                 if (result.length !== 0){
                     return result
                 }
