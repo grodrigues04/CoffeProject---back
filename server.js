@@ -1,6 +1,5 @@
 'use strict';
 require('dotenv').config();
-
 const Hapi = require('@hapi/hapi'); //importa o modulo hapi
 const knexConfig = require('./knexfile'); // Importa as configurações do Knex
 const knex = require('knex')(knexConfig.development); // Inicializa o Knex com o ambiente de desenvolvimento(Docker config)
