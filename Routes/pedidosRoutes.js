@@ -1,12 +1,25 @@
 const knexConfig = require('../knexfile'); // Importa as configurações do Knex
-const knex = require('knex')(knexConfig.development); // Inicializa o Knex com o ambiente de desenvolvimento
+const knex = require('knex')(knexConfig.development); 
+const utils = require("./utils")
+
 const pedidosRoutes = [
     {
+        //Ver pedidos
         method:"GET",
-        path:"/pedido",
+        path:"/pedido/{id}",
         handler:async(request, h) =>{
-            console.log(request)
-            return h.response({message:"ok, recebido"}).code(200)
+            const id_user = request.params.id
+
+            const ids_pedido = await knex('pedidos')  
+                .select('id')
+                .where('id_usuario', id_user)
+
+
+            const lista_de_itens_do_pedido = await utils.pedido(knex, ids_pedido)
+            console.log("lista chegando:", lista_de_itens_do_pedido)
+            const lista_de_cafes_do_pedido = await utils.gerar_lista_de_cafe(knex, lista_de_itens_do_pedido[0] )
+            console.log("SEGUNDA LISTA",lista_de_cafes_do_pedido)   
+            return h.response({message:"ok, recebido",pedidos:lista_de_cafes_do_pedido}).code(200)
 
         }
     },
